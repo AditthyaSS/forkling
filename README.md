@@ -7,7 +7,7 @@
 
 Forkling is a deep-dive tool for open-source repos — health scores, contributor networks, issue triage, and more. It also has a section for browsing open-weight LLMs, in case you're picking a model for your project.
 
-**Live app:** [forkling.vercel.app](https://forkling.vercel.app) *(update once deployed)*
+**Live app:** https://forkling.vercel.app/
 
 ---
 
