@@ -55,11 +55,54 @@ The app runs entirely client-side. You don't need any API keys to try it out, bu
 ## 📁 Project Structure
 
 ```
-src/
-  api/          GitHub + Hugging Face fetch logic, IndexedDB cache wrapper
-  pages/        Route-level components (Home, Repo detail tabs, Compare, Guide, Models)
-  components/   Shared UI (cards, filter chips, tables, rate-limit banner)
-  context/      App-wide React Context state
+forkling/
+├── public/
+│   ├── Forkling_logo.png        # Forky mascot (navbar + footer)
+│   ├── fl.png                   # README hero image
+│   └── favicon.svg
+├── src/
+│   ├── api/
+│   │   ├── cache.js             # IndexedDB fetchWithCache() — 1hr TTL
+│   │   ├── github.js            # GitHub REST API v3 wrapper
+│   │   └── huggingface.js       # Hugging Face Hub API wrapper
+│   ├── assets/                  # Static images
+│   ├── components/
+│   │   ├── FilterChips.jsx      # Language / topic / status filter row
+│   │   ├── Footer.jsx           # Site footer
+│   │   ├── ForkyState.jsx       # Forky mascot — empty states & loading
+│   │   ├── ModelIcon.jsx        # Org avatar → react-icon fallback for LLM cards
+│   │   ├── Navbar.jsx           # Fixed top nav with dark mode + settings
+│   │   ├── RateLimitBanner.jsx  # GitHub API rate limit indicator
+│   │   ├── RepoCard.jsx         # Home grid card (Compare + View actions)
+│   │   ├── RepoLayout.jsx       # Shared tabbed layout for /repo/:owner/:name
+│   │   ├── ScrollButtons.jsx    # Floating scroll-to-top / scroll-to-bottom
+│   │   └── SettingsModal.jsx    # GitHub PAT + HF token entry
+│   ├── context/
+│   │   └── AppContext.jsx       # Theme, compare list, rate limit, recent searches
+│   ├── pages/
+│   │   ├── HomePage.jsx         # Hero + stats + filters + repo card grid
+│   │   ├── ComparePage.jsx      # 3-slot side-by-side repo comparison
+│   │   ├── GuidePage.jsx        # Static contributor guide (editorial)
+│   │   ├── ModelsPage.jsx       # LLM Explorer — model grid + category pills
+│   │   ├── ModelDetailPage.jsx  # Single model detail
+│   │   ├── RepoOverviewPage.jsx       # Tab: metrics, languages, recent commits
+│   │   ├── RepoContributorsPage.jsx   # Tab: contributor list + bar chart
+│   │   ├── RepoNetworkPage.jsx        # Tab: D3 force graph (code ownership / issues)
+│   │   ├── RepoAnalyticsPage.jsx      # Tab: commit activity + participation charts
+│   │   ├── RepoIssuesPage.jsx         # Tab: good-first-issue triage
+│   │   └── RepoGovernancePage.jsx     # Tab: community health + license check
+│   ├── App.jsx                  # Router + layout shell
+│   ├── main.jsx                 # React entry point
+│   └── index.css                # Tailwind v4 @theme tokens + global styles
+├── .github/
+│   └── ISSUE_TEMPLATE/
+│       ├── bug-report.md
+│       └── feature-request.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── index.html
+├── vite.config.js
+└── package.json
 ```
 
 ---
