@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
-import { FiStar, FiGitBranch, FiAlertCircle, FiEye, FiPlusCircle, FiCheck, FiCopy } from 'react-icons/fi';
+import { FiStar, FiGitBranch, FiAlertCircle, FiEye, FiPlusCircle, FiCheck, FiCopy, FiClock } from 'react-icons/fi';
 
 function formatNumber(n) {
   if (!n) return '0';
@@ -15,6 +15,16 @@ function getYearsActive(createdAt) {
   const created = new Date(createdAt);
   const now = new Date();
   return Math.max(0, Math.floor((now - created) / (365.25 * 86400000)));
+}
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const hours = Math.floor(diff / 3600000);
+  if (hours < 1) return 'just now';
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return `${Math.floor(days / 30)}mo ago`;
 }
 
 export default function RepoCard({ repo }) {
@@ -123,6 +133,12 @@ export default function RepoCard({ repo }) {
           <FiAlertCircle className="text-gray-400" />
           {formatNumber(repo.open_issues_count)}
         </span>
+        {repo.pushed_at && (
+        <span className="flex items-center gap-1" title="Last pushed">
+          <FiClock className="text-gray-400" />
+          pushed {timeAgo(repo.pushed_at)}
+        </span>
+        )}
       </div>
 
       {/* Action buttons */}
