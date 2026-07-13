@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getCommitActivity, getParticipation } from '@/api/github';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import ForkyState from '@/components/ForkyState';
 
 export default function RepoAnalyticsPage() {
   const { owner, repoName } = useParams();
@@ -104,10 +105,11 @@ export default function RepoAnalyticsPage() {
       )}
 
       {weeklyData.length === 0 && participationData.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-4xl mb-3">📊</div>
-          <h3 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-1">Analytics Unavailable</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">GitHub is still computing stats for this repo. Try again in a moment.</p>
+        <div className="py-12">
+          <ForkyState
+            message="Forky is waiting on GitHub to crunch the numbers — check back in a moment."
+            size="lg"
+          />
         </div>
       )}
     </div>
