@@ -42,10 +42,6 @@ export default function RepoLayout() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const handleClick = () => {
-    window.open(repo.html_url, "_blank", "noopener,noreferrer");
-  };
-
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -58,7 +54,9 @@ export default function RepoLayout() {
         ]);
         setRepo(repoData);
         setLanguages(langData);
-        setContributorCount(Array.isArray(contributorsData) ? contributorsData.length : null);
+        setContributorCount(
+          Array.isArray(contributorsData) ? contributorsData.length : null,
+        );
       } catch (err) {
         setError(err.message);
       } finally {
@@ -134,25 +132,31 @@ export default function RepoLayout() {
               {repo.name}
             </h1>
 
+            {/* Homepage link */}
             {repo.homepage && (
               <a
                 href={repo.homepage}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent-gold hover:underline"
+                aria-label="Project homepage"
               >
                 <FiExternalLink className="text-sm" />
               </a>
             )}
 
-            <div
-              onClick={handleClick}
-              className="ml-1 text-[13px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full flex gap-2 items-center hover:underline cursor-pointer"
+            {/* View on GitHub link */}
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 inline-flex items-center gap-1.5 px-2.5 py-1 text-[13px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
               <FiGithub />
-              <span>View on github</span>
-            </div>
+              <span>View on GitHub</span>
+            </a>
           </div>
+
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
             {repo.description}
           </p>
