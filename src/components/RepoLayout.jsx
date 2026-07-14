@@ -6,7 +6,7 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
-import { getRepo, getLanguages } from "@/api/github";
+import { getRepo, getLanguages, getContributors } from "@/api/github";
 import {
   FiStar,
   FiGitBranch,
@@ -14,6 +14,7 @@ import {
   FiExternalLink,
   FiAlertCircle,
   FiGithub,
+  FiUsers,
 } from "react-icons/fi";
 
 function formatNumber(n) {
@@ -37,6 +38,7 @@ export default function RepoLayout() {
   const location = useLocation();
   const [repo, setRepo] = useState(null);
   const [languages, setLanguages] = useState({});
+  const [contributorCount, setContributorCount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -49,12 +51,14 @@ export default function RepoLayout() {
       setLoading(true);
       setError(null);
       try {
-        const [repoData, langData] = await Promise.all([
+        const [repoData, langData, contributorsData] = await Promise.all([
           getRepo(owner, repoName),
           getLanguages(owner, repoName),
+          getContributors(owner, repoName, 100, 1),
         ]);
         setRepo(repoData);
         setLanguages(langData);
+        setContributorCount(Array.isArray(contributorsData) ? contributorsData.length : null);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -168,6 +172,13 @@ export default function RepoLayout() {
             <span className="flex items-center gap-1">
               <FiAlertCircle /> {formatNumber(repo.open_issues_count)}
             </span>
+            {contributorCount !== null && (
+              <span className="flex items-center gap-1">
+                <FiUsers className="text-signal-active" />{" "}
+                {formatNumber(contributorCount)}
+                {contributorCount === 100 ? "+" : ""}
+              </span>
+            )}
             {repo.license?.spdx_id &&
               repo.license.spdx_id !== "NOASSERTION" && (
                 <span className="badge-healthy text-xs font-bold px-2 py-0.5 rounded-full">
@@ -234,7 +245,7 @@ export default function RepoLayout() {
       </div>
 
       {/* Tab content */}
-      <Outlet context={{ repo, languages }} />
+      <Outlet context={{ repo, languages, contributorCount }} />
     </div>
   );
 }
