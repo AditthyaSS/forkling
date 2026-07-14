@@ -237,6 +237,12 @@ export default function HomePage() {
                   placeholder="Search repos, orgs, or owner/repo..."
                   className="flex-1 px-4 py-4 bg-transparent text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none"
                 />
+                {/* "/" shortcut hint — hidden once the input is focused */}
+                {!query && (
+                  <kbd className="hidden sm:inline-flex mr-3 items-center gap-1 px-2 py-1 text-[11px] font-mono font-semibold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md select-none">
+                    /
+                  </kbd>
+                )}
                 <button
                   type="submit"
                   className="mr-2 px-5 py-2.5 bg-accent-gold text-white text-sm font-bold rounded-xl hover:bg-accent-gold-dark transition-colors"
