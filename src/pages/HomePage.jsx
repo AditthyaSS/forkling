@@ -104,7 +104,7 @@ export default function HomePage() {
         setShowRecent(false);
         handleSearch(null, search);
       }}
-      className="flex items-center gap-2 w-auto px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-accent-gold transition-colors bg-accent-gold/5 dark:bg-accent-gold/10 rounded-xl">
+      className="flex items-center gap-2 w-auto px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-accent-gold transition-colors bg-accent-gold/5 dark:bg-accent-gold/7 rounded-xl">
       <FaClockRotateLeft />
       {search}
     </button>
