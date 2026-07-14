@@ -38,13 +38,14 @@ function RepoCardSkeleton() {
 }
 
 export default function HomePage() {
-  const { addRecentSearch } = useApp();
+  const { addRecentSearch, recentSearches } = useApp();
   const [query, setQuery] = useState("");
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [filters, setFilters] = useState({
     language: "",
     topic: "",
@@ -93,6 +94,10 @@ export default function HomePage() {
   const searchRef = useRef(null);
   useEffect(() => {
     function handleKeyDown(e) {
+      if (e.key === "Escape") {
+        setShowDropdown(false);
+        return;
+      }
       if (e.key !== "/") return;
       const active = document.activeElement;
 
@@ -112,6 +117,14 @@ export default function HomePage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  const handleRecentSearchClick = (term) => {
+    setQuery(term);
+    setShowDropdown(false);
+    addRecentSearch(term);
+    setPage(1);
+    fetchRepos(term, filters, 1);
+  };
 
   // Initial load — most-starred repos
   useEffect(() => {
@@ -211,22 +224,48 @@ export default function HomePage() {
             onSubmit={handleSearch}
             className="hero-entry hero-entry-4 max-w-2xl mx-auto mb-6"
           >
-            <div className="flex items-center bg-white dark:bg-[#161A22] border-2 border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl shadow-gray-200/40 dark:shadow-black/30 focus-within:border-accent-gold focus-within:shadow-accent-gold/20 transition-all duration-200">
-              <FiSearch className="ml-5 text-gray-400 text-lg flex-shrink-0" />
-              <input
-                type="text"
-                ref={searchRef}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search repos, orgs, or owner/repo..."
-                className="flex-1 px-4 py-4 bg-transparent text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="mr-2 px-5 py-2.5 bg-accent-gold text-white text-sm font-bold rounded-xl hover:bg-accent-gold-dark transition-colors"
-              >
-                Search
-              </button>
+            <div className="relative">
+              <div className="flex items-center bg-white dark:bg-[#161A22] border-2 border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl shadow-gray-200/40 dark:shadow-black/30 focus-within:border-accent-gold focus-within:shadow-accent-gold/20 transition-all duration-200">
+                <FiSearch className="ml-5 text-gray-400 text-lg flex-shrink-0" />
+                <input
+                  type="text"
+                  ref={searchRef}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                  placeholder="Search repos, orgs, or owner/repo..."
+                  className="flex-1 px-4 py-4 bg-transparent text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="mr-2 px-5 py-2.5 bg-accent-gold text-white text-sm font-bold rounded-xl hover:bg-accent-gold-dark transition-colors"
+                >
+                  Search
+                </button>
+              </div>
+
+              {/* Recent searches dropdown */}
+              {showDropdown && recentSearches.length > 0 && (
+                <ul
+                  role="listbox"
+                  aria-label="Recent searches"
+                  className="absolute z-50 top-full left-0 right-0 mt-2 bg-white dark:bg-[#161A22] border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl shadow-gray-200/40 dark:shadow-black/30 overflow-hidden"
+                >
+                  {recentSearches.slice(0, 5).map((term) => (
+                    <li key={term} role="option">
+                      <button
+                        type="button"
+                        onMouseDown={() => handleRecentSearchClick(term)}
+                        className="w-full flex items-center gap-3 px-5 py-3 text-sm text-left text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-accent-gold transition-colors"
+                      >
+                        <FiSearch className="text-gray-400 flex-shrink-0" />
+                        <span className="truncate">{term}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </form>
 
