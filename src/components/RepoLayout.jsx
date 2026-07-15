@@ -6,7 +6,7 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
-import { getRepo, getLanguages } from "@/api/github";
+import { getRepo, getLanguages, getContributors } from "@/api/github";
 import {
   FiStar,
   FiGitBranch,
@@ -14,6 +14,7 @@ import {
   FiExternalLink,
   FiAlertCircle,
   FiGithub,
+  FiUsers,
 } from "react-icons/fi";
 
 function formatNumber(n) {
@@ -37,24 +38,25 @@ export default function RepoLayout() {
   const location = useLocation();
   const [repo, setRepo] = useState(null);
   const [languages, setLanguages] = useState({});
+  const [contributorCount, setContributorCount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const handleClick = () => {
-    window.open(repo.html_url, "_blank", "noopener,noreferrer");
-  };
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       setError(null);
       try {
-        const [repoData, langData] = await Promise.all([
+        const [repoData, langData, contributorsData] = await Promise.all([
           getRepo(owner, repoName),
           getLanguages(owner, repoName),
+          getContributors(owner, repoName, 100, 1),
         ]);
         setRepo(repoData);
         setLanguages(langData);
+        setContributorCount(
+          Array.isArray(contributorsData) ? contributorsData.length : null,
+        );
       } catch (err) {
         setError(err.message);
       } finally {
@@ -130,25 +132,31 @@ export default function RepoLayout() {
               {repo.name}
             </h1>
 
+            {/* Homepage link */}
             {repo.homepage && (
               <a
                 href={repo.homepage}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent-gold hover:underline"
+                aria-label="Project homepage"
               >
                 <FiExternalLink className="text-sm" />
               </a>
             )}
 
-            <div
-              onClick={handleClick}
-              className="ml-1 text-[13px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full flex gap-2 items-center hover:underline cursor-pointer"
+            {/* View on GitHub link */}
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 inline-flex items-center gap-1.5 px-2.5 py-1 text-[13px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
               <FiGithub />
-              <span>View on github</span>
-            </div>
+              <span>View on GitHub</span>
+            </a>
           </div>
+
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
             {repo.description}
           </p>
@@ -168,6 +176,13 @@ export default function RepoLayout() {
             <span className="flex items-center gap-1">
               <FiAlertCircle /> {formatNumber(repo.open_issues_count)}
             </span>
+            {contributorCount !== null && (
+              <span className="flex items-center gap-1">
+                <FiUsers className="text-signal-active" />{" "}
+                {formatNumber(contributorCount)}
+                {contributorCount === 100 ? "+" : ""}
+              </span>
+            )}
             {repo.license?.spdx_id &&
               repo.license.spdx_id !== "NOASSERTION" && (
                 <span className="badge-healthy text-xs font-bold px-2 py-0.5 rounded-full">
@@ -234,7 +249,7 @@ export default function RepoLayout() {
       </div>
 
       {/* Tab content */}
-      <Outlet context={{ repo, languages }} />
+      <Outlet context={{ repo, languages, contributorCount }} />
     </div>
   );
 }
