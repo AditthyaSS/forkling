@@ -169,6 +169,36 @@ export async function getParticipation(owner, repo) {
 }
 
 /**
+ * Get repository forks sorted by the given strategy.
+ * @param {string} owner
+ * @param {string} repo
+ * @param {'newest'|'oldest'|'stargazers'|'watchers'} sort
+ * @param {number} perPage
+ * @param {number} page
+ */
+export async function getForks(owner, repo, sort = 'stargazers', perPage = 100, page = 1) {
+  const url = buildUrl(`/repos/${owner}/${repo}/forks`, { sort, per_page: perPage, page });
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
+ * Compare two refs (branches/SHAs) in a repository.
+ * Used to determine how far ahead/behind a fork is relative to the upstream default branch.
+ * Returns { ahead_by, behind_by, status, ... }
+ *
+ * @param {string} owner  - upstream owner
+ * @param {string} repo   - upstream repo name
+ * @param {string} base   - base ref (e.g. upstream default branch)
+ * @param {string} head   - head ref in "owner:branch" format
+ */
+export async function compareRefs(owner, repo, base, head) {
+  // head must be URL-encoded when it contains a colon
+  const encodedHead = encodeURIComponent(head);
+  const url = buildUrl(`/repos/${owner}/${repo}/compare/${base}...${encodedHead}`);
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
  * Test if a PAT is valid.
  */
 export async function testPAT(pat) {

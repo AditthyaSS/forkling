@@ -31,6 +31,7 @@ const TABS = [
   { path: "/analytics", label: "Analytics" },
   { path: "/issues", label: "Issues" },
   { path: "/governance", label: "Governance" },
+  { path: "/forks", label: "Forks" },
 ];
 
 export default function RepoLayout() {
