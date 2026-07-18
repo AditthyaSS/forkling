@@ -1,4 +1,5 @@
 import { FiX } from 'react-icons/fi';
+import { getDateMonthsAgo } from '../utils/date';
 
 const LANGUAGES = [
   'JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'Rust',
@@ -11,10 +12,21 @@ const TOPICS = [
   'data-science', 'testing', 'networking', 'graphics',
 ];
 
+/**
+ * Maintenance filter definitions.
+ *
+ * Each entry carries a `pushedOp` (`'>'` or `'<'`) alongside `pushed` so the
+ * query builder knows which GitHub comparison operator to use.
+ *
+ * - Thriving / Active use `pushed:>DATE`  — pushed *after* the cutoff.
+ * - Dormant         uses `pushed:<DATE`   — not pushed *since* the cutoff.
+ *
+ * Dates are calculated dynamically so they are never hardcoded.
+ */
 const MAINTENANCE = [
-  { key: 'thriving', label: '🟢 Thriving', pushed: new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0] },
-  { key: 'active', label: '🟡 Active', pushed: new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0] },
-  { key: 'dormant', label: '🔴 Dormant', pushed: null },
+  { key: 'thriving', label: '🟢 Thriving', pushedOp: '>', pushed: getDateMonthsAgo(0.25) },
+  { key: 'active',   label: '🟡 Active',   pushedOp: '>', pushed: getDateMonthsAgo(1)    },
+  { key: 'dormant',  label: '🔴 Dormant',  pushedOp: '<', pushed: getDateMonthsAgo(6)    },
 ];
 
 export default function FilterChips({ filters, onFiltersChange }) {
@@ -33,10 +45,12 @@ export default function FilterChips({ filters, onFiltersChange }) {
   };
 
   const toggleMaintenance = (m) => {
+    const isActive = filters.maintenance === m.key;
     onFiltersChange({
       ...filters,
-      maintenance: filters.maintenance === m.key ? '' : m.key,
-      pushed: filters.maintenance === m.key ? '' : m.pushed,
+      maintenance: isActive ? '' : m.key,
+      pushed:      isActive ? '' : m.pushed,
+      pushedOp:    isActive ? '' : m.pushedOp,
     });
   };
 
@@ -55,6 +69,7 @@ export default function FilterChips({ filters, onFiltersChange }) {
       topic: '',
       maintenance: '',
       pushed: '',
+      pushedOp: '',
       hasGoodFirstIssue: false,
     });
   };
