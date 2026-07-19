@@ -7,7 +7,7 @@ import RateLimitBanner from '@/components/RateLimitBanner';
 import ScrollButtons from '@/components/ScrollButtons';
 import SettingsModal from '@/components/SettingsModal';
 import RepoLayout from '@/components/RepoLayout';
-
+import CustomCursor from '@/components/CustomCursor';
 import HomePage from '@/pages/HomePage';
 import ComparePage from '@/pages/ComparePage';
 import GuidePage from '@/pages/GuidePage';
@@ -90,6 +90,7 @@ function AppLayout() {
       <Footer />
       <ScrollButtons />
       <SettingsModal />
+      <CustomCursor />
     </div>
   );
 }
