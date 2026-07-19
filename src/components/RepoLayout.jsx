@@ -138,8 +138,7 @@ export default function RepoLayout() {
                 href={repo.homepage}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent-gold hover:underline"
-                aria-label="Project homepage"
+className="text-accent-gold hover:underline transition-colors"                aria-label="Project homepage"
               >
                 <FiExternalLink className="text-sm" />
               </a>

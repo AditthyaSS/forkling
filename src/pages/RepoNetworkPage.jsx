@@ -167,13 +167,13 @@ export default function RepoNetworkPage() {
         <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
           <button
             onClick={() => setView('code')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors ${view === 'code' ? 'bg-white dark:bg-gray-700 text-accent-gold shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors ${view === 'code' ? 'bg-white dark:bg-gray-700 text-accent-gold shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-accent-gold dark:hover:text-accent-gold'}`}
           >
             Code Ownership
           </button>
           <button
             onClick={() => setView('issues')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors ${view === 'issues' ? 'bg-white dark:bg-gray-700 text-accent-gold shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors ${view === 'issues' ? 'bg-white dark:bg-gray-700 text-accent-gold shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-accent-gold dark:hover:text-accent-gold'}`}
           >
             Issue Activity
           </button>
