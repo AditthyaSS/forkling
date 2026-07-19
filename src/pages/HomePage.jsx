@@ -92,6 +92,9 @@ export default function HomePage() {
   );
 
   const searchRef = useRef(null);
+  // Wraps the input + dropdown together so we can detect outside clicks reliably
+  const searchContainerRef = useRef(null);
+
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === "Escape") {
@@ -115,6 +118,34 @@ export default function HomePage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // Detect clicks outside the search container and close the dropdown.
+  // Using mousedown (not click) so the handler fires before any blur event,
+  // preventing a race between blur and the dropdown disappearing.
+  useEffect(() => {
+    function handleOutsideMouseDown(e) {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target)
+      ) {
+        setShowDropdown(false);
+      }
+    }
+
+    // Close the dropdown on scroll so it never floats detached from its input
+    function handleScroll() {
+      setShowDropdown(false);
+    }
+
+    document.addEventListener("mousedown", handleOutsideMouseDown);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Clean up listeners when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideMouseDown);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -224,7 +255,7 @@ export default function HomePage() {
             onSubmit={handleSearch}
             className="hero-entry hero-entry-4 max-w-2xl mx-auto mb-6"
           >
-            <div className="relative">
+          <div className="relative" ref={searchContainerRef}>
               <div className="flex items-center bg-white dark:bg-[#161A22] border-2 border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl shadow-gray-200/40 dark:shadow-black/30 focus-within:border-accent-gold focus-within:shadow-accent-gold/20 transition-all duration-200">
                 <FiSearch className="ml-5 text-gray-400 text-lg flex-shrink-0" />
                 <input
@@ -233,7 +264,6 @@ export default function HomePage() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                   placeholder="Search repos, orgs, or owner/repo..."
                   className="flex-1 px-4 py-4 bg-transparent text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none"
                 />
@@ -262,7 +292,7 @@ export default function HomePage() {
                     <li key={term} role="option">
                       <button
                         type="button"
-                        onMouseDown={() => handleRecentSearchClick(term)}
+                        onClick={() => handleRecentSearchClick(term)}
                         className="w-full flex items-center gap-3 px-5 py-3 text-sm text-left text-gray-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-accent-gold transition-colors"
                       >
                         <FiSearch className="text-gray-400 flex-shrink-0" />
