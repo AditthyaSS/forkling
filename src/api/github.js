@@ -46,7 +46,10 @@ export async function searchRepos(query = '', filters = {}, page = 1, perPage = 
     q += ' good-first-issues:>0';
   }
   if (filters.pushed) {
-    q += ` pushed:>${filters.pushed}`;
+    // Use the operator carried by the filter (`>` for active/thriving, `<` for dormant).
+    // Fall back to `>` for any callers that pre-date the pushedOp field.
+    const op = filters.pushedOp || '>';
+    q += ` pushed:${op}${filters.pushed}`;
   }
 
   const sort = filters.sort || 'stars';
