@@ -5,10 +5,12 @@ const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   // ─── Theme ─────────────────────────────────────────
-  const [theme, setThemeState] = useState(() => {
-    return localStorage.getItem('forkling_theme') || 'light';
+const [theme, setThemeState] = useState(() => {
+    const stored = localStorage.getItem('forkling_theme');
+    if (stored) return stored;
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
   });
-
   const setTheme = useCallback((t) => {
     setThemeState(t);
     localStorage.setItem('forkling_theme', t);
