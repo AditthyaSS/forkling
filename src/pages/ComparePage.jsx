@@ -2,12 +2,7 @@ import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { getRepo, getContributors, getCommunityProfile, searchRepos } from '@/api/github';
 import { FiPlus, FiX, FiSearch, FiStar, FiGitBranch, FiAlertCircle, FiShield, FiUsers, FiClock, FiTrash2 } from 'react-icons/fi';
-
-function formatNumber(n) {
-  if (!n) return '0';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return n.toString();
-}
+import { formatNumber } from '@/utils/format';
 
 function formatDate(d) {
   if (!d) return '—';

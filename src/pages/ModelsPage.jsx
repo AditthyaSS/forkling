@@ -13,13 +13,7 @@ import {
   TbWorld,
 } from 'react-icons/tb';
 import { HiOutlineSparkles } from 'react-icons/hi2';
-
-function formatNumber(n) {
-  if (!n) return '0';
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return n.toString();
-}
+import { formatNumber } from '@/utils/format';
 
 /** Category pills use react-icons consistently — no emoji */
 const CATEGORY_PILLS = [
