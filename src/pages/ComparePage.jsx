@@ -111,8 +111,7 @@ export default function ComparePage() {
           }
 
           return (
-            <div key={item.full_name} className="bg-white dark:bg-[#161A22] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 relative">
-              <button
+<div key={item.full_name} className="bg-white dark:bg-[#161A22] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 relative card-hover">              <button
                 onClick={() => removeFromCompare(item.full_name)}
                 className="absolute top-3 right-3 p-1.5 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors"
               >
