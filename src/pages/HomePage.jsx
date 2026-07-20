@@ -11,6 +11,7 @@ import {
   FiLayers,
   FiLoader,
 } from "react-icons/fi";
+import { formatNumber } from '@/utils/format';
 
 const SKELETON_COUNT = 6;
 
@@ -325,7 +326,7 @@ export default function HomePage() {
                 <FiCode className="text-accent-gold text-lg" />
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-accent-gold font-headline">
-                {stats.repos > 0 ? formatCompactNumber(stats.repos) : "—"}
+                {stats.repos > 0 ? formatNumber(stats.repos) : "—"}
               </div>
               <p className="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Repos Found
@@ -421,8 +422,3 @@ export default function HomePage() {
   );
 }
 
-function formatCompactNumber(n) {
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
-  if (n >= 1000) return (n / 1000).toFixed(1) + "K";
-  return n.toLocaleString();
-}

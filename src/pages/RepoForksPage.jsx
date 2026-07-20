@@ -28,28 +28,9 @@ import {
 } from 'recharts';
 import ForkyState from '@/components/ForkyState';
 import { getForks, compareRefs } from '@/api/github';
+import { formatNumber, timeAgo } from '@/utils/format';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatNumber(n) {
-  if (!n) return '0';
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
-  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
-  return n.toString();
-}
-
-function timeAgo(dateStr) {
-  if (!dateStr) return '—';
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const hours = Math.floor(diff / 3_600_000);
-  if (hours < 1) return 'just now';
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return 'yesterday';
-  if (days < 30) return `${days}d ago`;
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
-  return `${Math.floor(days / 365)}y ago`;
-}
 
 function daysAgo(dateStr) {
   if (!dateStr) return Infinity;

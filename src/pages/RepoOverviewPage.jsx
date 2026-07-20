@@ -2,27 +2,11 @@ import { useState, useEffect } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import { getCommits } from '@/api/github';
 import { FiClock, FiGitCommit, FiStar, FiGitBranch, FiAlertCircle, FiCalendar } from 'react-icons/fi';
+import { formatNumber, timeAgo } from '@/utils/format';
 
 function formatDate(dateStr) {
   if (!dateStr) return '—';
   return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-}
-
-function formatNumber(n) {
-  if (!n) return '0';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return n.toString();
-}
-
-function timeAgo(dateStr) {
-  if (!dateStr) return '';
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'today';
-  if (days === 1) return 'yesterday';
-  if (days < 30) return `${days}d ago`;
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
-  return `${Math.floor(days / 365)}y ago`;
 }
 
 export default function RepoOverviewPage() {

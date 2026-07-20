@@ -3,13 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getModel, PIPELINE_TAGS, classifyLicense } from '@/api/huggingface';
 import { FiDownload, FiHeart, FiClock, FiTag, FiExternalLink, FiArrowLeft } from 'react-icons/fi';
 import { HiOutlineSparkles } from 'react-icons/hi2';
-
-function formatNumber(n) {
-  if (!n) return '0';
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return n.toString();
-}
+import { formatNumber } from '@/utils/format';
 
 function formatDate(d) {
   if (!d) return '—';

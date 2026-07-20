@@ -2,29 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
 import { FiStar, FiGitBranch, FiAlertCircle, FiEye, FiPlusCircle, FiCheck, FiCopy, FiClock } from 'react-icons/fi';
-
-function formatNumber(n) {
-  if (!n) return '0';
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return n.toString();
-}
+import { formatNumber, timeAgo } from '@/utils/format';
 
 function getYearsActive(createdAt) {
   if (!createdAt) return 0;
   const created = new Date(createdAt);
   const now = new Date();
   return Math.max(0, Math.floor((now - created) / (365.25 * 86400000)));
-}
-function timeAgo(dateStr) {
-  if (!dateStr) return '';
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return 'just now';
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
-  return `${Math.floor(days / 30)}mo ago`;
 }
 
 export default function RepoCard({ repo }) {
