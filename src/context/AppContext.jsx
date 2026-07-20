@@ -6,14 +6,22 @@ const AppContext = createContext(null);
 export function AppProvider({ children }) {
   // ─── Theme ─────────────────────────────────────────
 const [theme, setThemeState] = useState(() => {
-    const stored = localStorage.getItem('forkling_theme');
-    if (stored) return stored;
+    try {
+      const stored = localStorage.getItem('forkling_theme');
+      if (stored) return stored;
+    } catch {
+      // localStorage unavailable, fall through to system preference
+    }
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     return prefersDark ? 'dark' : 'light';
   });
   const setTheme = useCallback((t) => {
     setThemeState(t);
-    localStorage.setItem('forkling_theme', t);
+    try {
+      localStorage.setItem('forkling_theme', t);
+    } catch {
+      // localStorage unavailable, continue without persistence
+    }
     if (t === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -24,15 +32,6 @@ const [theme, setThemeState] = useState(() => {
   const toggleTheme = useCallback(() => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   }, [theme, setTheme]);
-
-  // Sync theme on mount
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
 
   // ─── Compare List (up to 3 repos) ─────────────────
   const [compareList, setCompareList] = useState(() => {
