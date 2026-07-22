@@ -123,10 +123,26 @@ export async function getCommunityProfile(owner, repo) {
  * Get rate limit status.
  */
 export async function getRateLimit() {
-  const url = buildUrl('/rate_limit');
-  // Don't cache rate limit — always fetch live
-  const response = await fetch(url, { headers: getHeaders() });
-  return response.json();
+  try {
+    const url = buildUrl('/rate_limit');
+    const response = await fetch(url, { headers: getHeaders() });
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    const core = data?.resources?.core;
+    if (
+      !core ||
+      typeof core.limit !== 'number' ||
+      typeof core.remaining !== 'number' ||
+      typeof core.reset !== 'number'
+    ) {
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 /**
