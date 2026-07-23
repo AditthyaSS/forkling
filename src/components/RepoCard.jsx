@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
-import { FiStar, FiGitBranch, FiAlertCircle, FiEye, FiPlusCircle, FiCheck, FiCopy, FiClock } from 'react-icons/fi';
+import { FiStar, FiGitBranch, FiAlertCircle, FiEye, FiPlusCircle, FiCheck, FiCopy, FiClock, FiBookmark } from 'react-icons/fi';
 import { formatNumber, timeAgo } from '@/utils/format';
 
 function getYearsActive(createdAt) {
@@ -12,9 +12,11 @@ function getYearsActive(createdAt) {
 }
 
 export default function RepoCard({ repo }) {
-  const { addToCompare, removeFromCompare, isInCompare, compareList } = useApp();
+  const { addToCompare, removeFromCompare, isInCompare, compareList, addToWatchlist, removeFromWatchlist, isBookmarked } = useApp();
   const inCompare = isInCompare(repo.full_name);
+  const bookmarked = isBookmarked(repo.full_name);
   const years = getYearsActive(repo.created_at);
+  const isRecentlyUpdated = repo.pushed_at && (new Date() - new Date(repo.pushed_at) < 7 * 24 * 60 * 60 * 1000);
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = (e) => {
@@ -25,6 +27,16 @@ export default function RepoCard({ repo }) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     });
+  };
+
+  const handleBookmark = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (bookmarked) {
+      removeFromWatchlist(repo.full_name);
+    } else {
+      addToWatchlist(repo);
+    }
   };
 
   const handleCompare = (e) => {
@@ -53,14 +65,24 @@ export default function RepoCard({ repo }) {
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{repo.owner?.login}</p>
         </div>
-        <button
-          onClick={handleCopy}
-          title="Copy repo name"
-          aria-label="Copy repository name"
-          className="flex-shrink-0 p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg border border-transparent hover:border-gray-200 dark:hover:border-gray-600"
-        >
-          {isCopied ? <FiCheck className="text-emerald-500" /> : <FiCopy className="text-sm" />}
-        </button>
+        <div className="flex gap-1.5">
+          <button
+            onClick={handleBookmark}
+            title={bookmarked ? "Remove from watchlist" : "Add to watchlist"}
+            aria-label="Bookmark repository"
+            className={`flex-shrink-0 p-1.5 transition-colors rounded-lg border ${bookmarked ? 'text-accent-gold bg-accent-gold/10 border-accent-gold/20' : 'text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border-transparent hover:border-gray-200 dark:hover:border-gray-600'}`}
+          >
+            <FiBookmark className={`text-sm ${bookmarked ? 'fill-current' : ''}`} />
+          </button>
+          <button
+            onClick={handleCopy}
+            title="Copy repo name"
+            aria-label="Copy repository name"
+            className="flex-shrink-0 p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg border border-transparent hover:border-gray-200 dark:hover:border-gray-600"
+          >
+            {isCopied ? <FiCheck className="text-emerald-500" /> : <FiCopy className="text-sm" />}
+          </button>
+        </div>
       </div>
 
       {/* Description */}
@@ -121,6 +143,7 @@ export default function RepoCard({ repo }) {
         <span className="flex items-center gap-1" title="Last pushed">
           <FiClock className="text-gray-400" />
           pushed {timeAgo(repo.pushed_at)}
+          {isRecentlyUpdated && <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full ml-0.5" title="Recently updated"></span>}
         </span>
         )}
       </div>

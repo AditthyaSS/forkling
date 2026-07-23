@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { getRepo, getContributors, getCommunityProfile, searchRepos } from '@/api/github';
-import { FiPlus, FiX, FiSearch, FiStar, FiGitBranch, FiAlertCircle, FiShield, FiUsers, FiClock, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiX, FiSearch, FiStar, FiGitBranch, FiAlertCircle, FiShield, FiUsers, FiClock, FiTrash2, FiBookmark, FiCheck } from 'react-icons/fi';
 import { formatNumber } from '@/utils/format';
 
 function formatDate(d) {
@@ -10,7 +10,7 @@ function formatDate(d) {
 }
 
 export default function ComparePage() {
-  const { compareList, removeFromCompare, clearCompare, addToCompare } = useApp();
+  const { compareList, removeFromCompare, clearCompare, addToCompare, watchlist } = useApp();
   const [repoData, setRepoData] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -220,6 +220,56 @@ export default function ComparePage() {
             <FiTrash2 className="text-sm" />
             Clear All
           </button>
+        </div>
+      )}
+
+      {/* Watchlist Section */}
+      {watchlist && watchlist.length > 0 && (
+        <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold font-headline text-gray-900 dark:text-gray-100 flex items-center justify-center gap-2">
+              <FiBookmark className="text-accent-gold" /> My Watchlist
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+              Quickly add your bookmarked repositories to the comparison.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+             {watchlist.map(repo => {
+               const isAdded = compareList.some(r => r.full_name === repo.full_name);
+               return (
+                 <div key={repo.full_name} className="bg-white dark:bg-[#161A22] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex flex-col gap-3 transition-colors hover:border-gray-300 dark:hover:border-gray-700">
+                   <div className="flex items-center gap-3">
+                     <img src={repo.owner?.avatar_url} alt="" className="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-700" />
+                     <div className="min-w-0 flex-1">
+                       <span className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate block">{repo.name}</span>
+                       <span className="text-xs text-gray-500 dark:text-gray-400 truncate block">{repo.owner?.login}</span>
+                     </div>
+                   </div>
+                   <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 min-h-[2rem]">
+                     {repo.description || "No description available."}
+                   </p>
+                   <button
+                     onClick={() => addToCompare(repo)}
+                     disabled={compareList.length >= 3 || isAdded}
+                     className={`w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold rounded-xl border transition-colors ${
+                       isAdded 
+                         ? 'border-accent-gold bg-accent-gold/10 text-accent-gold cursor-default'
+                         : compareList.length >= 3
+                           ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-400 cursor-not-allowed'
+                           : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 hover:border-accent-gold hover:text-accent-gold text-gray-600 dark:text-gray-300'
+                     }`}
+                   >
+                     {isAdded ? (
+                       <><FiCheck className="text-sm" /> Added to Compare</>
+                     ) : (
+                       <><FiPlus className="text-sm" /> Add to Compare</>
+                     )}
+                   </button>
+                 </div>
+               );
+             })}
+          </div>
         </div>
       )}
     </div>
