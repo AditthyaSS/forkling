@@ -10,6 +10,7 @@ import {
   FiGlobe,
   FiLayers,
   FiLoader,
+  FiBookmark,
 } from "react-icons/fi";
 import { formatNumber } from '@/utils/format';
 
@@ -39,7 +40,8 @@ function RepoCardSkeleton() {
 }
 
 export default function HomePage() {
-  const { addRecentSearch, recentSearches } = useApp();
+  const { addRecentSearch, recentSearches, watchlist, clearWatchlist } = useApp();
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'watchlist'
   const [query, setQuery] = useState("");
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -360,13 +362,32 @@ export default function HomePage() {
 
       {/* ═══════ FILTERS + GRID ═══════ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        {/* Filters */}
-        <div className="mb-8 p-4 bg-white dark:bg-[#161A22] rounded-2xl border border-gray-200 dark:border-gray-800">
-          <FilterChips
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-          />
+        {/* Tabs */}
+        <div className="flex gap-6 mb-6 border-b border-gray-200 dark:border-gray-800">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`pb-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'all' ? 'border-accent-gold text-accent-gold' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
+          >
+            All Repos
+          </button>
+          <button
+            onClick={() => setActiveTab('watchlist')}
+            className={`pb-3 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'watchlist' ? 'border-accent-gold text-accent-gold' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
+          >
+            My Watchlist
+            <span className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-0.5 px-2 rounded-full text-[10px] font-bold">{watchlist.length}</span>
+          </button>
         </div>
+
+        {/* Filters */}
+        {activeTab === 'all' && (
+          <div className="mb-8 p-4 bg-white dark:bg-[#161A22] rounded-2xl border border-gray-200 dark:border-gray-800">
+            <FilterChips
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+            />
+          </div>
+        )}
 
         {/* Error state */}
         {error && (
@@ -379,15 +400,19 @@ export default function HomePage() {
 
         {/* Repo grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {loading && repos.length === 0
-            ? Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-                <RepoCardSkeleton key={i} />
-              ))
-            : repos.map((repo) => <RepoCard key={repo.id} repo={repo} />)}
+          {activeTab === 'all' ? (
+            loading && repos.length === 0
+              ? Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                  <RepoCardSkeleton key={i} />
+                ))
+              : repos.map((repo) => <RepoCard key={repo.id} repo={repo} />)
+          ) : (
+            watchlist.map((repo) => <RepoCard key={repo.full_name} repo={repo} />)
+          )}
         </div>
 
-        {/* Empty state */}
-        {!loading && repos.length === 0 && !error && (
+        {/* Empty state for All */}
+        {activeTab === 'all' && !loading && repos.length === 0 && !error && (
           <div className="text-center py-16 flex flex-col items-center gap-3">
             <img
               src="/Forkling_logo.png"
@@ -404,8 +429,17 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Load more */}
-        {repos.length > 0 && repos.length < totalCount && (
+        {/* Empty state for Watchlist */}
+        {activeTab === 'watchlist' && watchlist.length === 0 && (
+          <div className="text-center py-16 flex flex-col items-center gap-3">
+             <FiBookmark className="text-4xl text-gray-300 dark:text-gray-600 mb-2" />
+             <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">Your Watchlist is empty</h3>
+             <p className="text-sm text-gray-500 dark:text-gray-400">Bookmark repositories to keep track of them here.</p>
+          </div>
+        )}
+
+        {/* Load more (only for All Repos) */}
+        {activeTab === 'all' && repos.length > 0 && repos.length < totalCount && (
           <div className="text-center mt-8">
             <button
               onClick={handleLoadMore}
@@ -414,6 +448,18 @@ export default function HomePage() {
             >
               {loading ? <FiLoader className="animate-spin" /> : null}
               Load More Repos
+            </button>
+          </div>
+        )}
+
+        {/* Clear all for Watchlist */}
+        {activeTab === 'watchlist' && watchlist.length > 0 && (
+          <div className="text-center mt-8">
+            <button
+              onClick={clearWatchlist}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-signal-danger transition-colors"
+            >
+              Clear Watchlist
             </button>
           </div>
         )}

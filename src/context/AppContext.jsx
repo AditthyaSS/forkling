@@ -102,6 +102,39 @@ const [theme, setThemeState] = useState(() => {
     });
   }, []);
 
+  // ─── Watchlist (up to 50 repos) ────────────────────
+  const [watchlist, setWatchlist] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('forkling_watchlist') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('forkling_watchlist', JSON.stringify(watchlist));
+  }, [watchlist]);
+
+  const addToWatchlist = useCallback((repo) => {
+    setWatchlist(prev => {
+      if (prev.length >= 50) return prev;
+      if (prev.some(r => r.full_name === repo.full_name)) return prev;
+      return [...prev, { ...repo, bookmarkedAt: new Date().toISOString() }];
+    });
+  }, []);
+
+  const removeFromWatchlist = useCallback((fullName) => {
+    setWatchlist(prev => prev.filter(r => r.full_name !== fullName));
+  }, []);
+
+  const isBookmarked = useCallback((fullName) => {
+    return watchlist.some(r => r.full_name === fullName);
+  }, [watchlist]);
+
+  const clearWatchlist = useCallback(() => {
+    setWatchlist([]);
+  }, []);
+
   // ─── Settings Modal ────────────────────────────────
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -109,6 +142,7 @@ const [theme, setThemeState] = useState(() => {
   const value = {
     theme, setTheme, toggleTheme,
     compareList, addToCompare, removeFromCompare, isInCompare, clearCompare,
+    watchlist, addToWatchlist, removeFromWatchlist, isBookmarked, clearWatchlist,
     rateLimit, refreshRateLimit,
     recentSearches, addRecentSearch,
     settingsOpen, setSettingsOpen,
