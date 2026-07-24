@@ -1,0 +1,26 @@
+{
+  "name": "Forkling — Discover Open-Source Repos & LLMs",
+  "short_name": "Forkling",
+  "description": "Explore open-source repositories, compare projects side-by-side, and discover open-source LLMs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0D11",
+  "theme_color": "#D6A228",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/Forkling_logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Forkling_logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["developer tools", "utilities"],
+  "lang": "en"
+}
