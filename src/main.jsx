@@ -8,3 +8,17 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 );
+
+// ─── Service Worker Registration (production only) ───
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((reg) => {
+        console.log('[Forkling] SW registered:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('[Forkling] SW registration failed:', err);
+      });
+  });
+}

@@ -3,10 +3,10 @@ import { useApp } from '@/context/AppContext';
 import { testPAT } from '@/api/github';
 import { testHFToken } from '@/api/huggingface';
 import { clearCache } from '@/api/cache';
-import { FiX, FiKey, FiCheck, FiAlertCircle, FiTrash2, FiLoader } from 'react-icons/fi';
+import { FiX, FiKey, FiCheck, FiAlertCircle, FiTrash2, FiLoader, FiDownload } from 'react-icons/fi';
 
 export default function SettingsModal() {
-  const { settingsOpen, setSettingsOpen, refreshRateLimit } = useApp();
+  const { settingsOpen, setSettingsOpen, refreshRateLimit, installPrompt, triggerInstall } = useApp();
   const [ghPat, setGhPat] = useState(() => localStorage.getItem('forkling_github_pat') || '');
   const [hfToken, setHfToken] = useState(() => localStorage.getItem('forkling_hf_token') || '');
   const [ghStatus, setGhStatus] = useState(null); // null | 'testing' | 'valid' | 'invalid'
@@ -154,6 +154,22 @@ export default function SettingsModal() {
               <p className="text-xs text-signal-healthy mt-1.5">✓ Token verified successfully!</p>
             )}
           </div>
+
+          {/* Install App */}
+          {installPrompt && (
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+              <button
+                onClick={triggerInstall}
+                className="flex items-center gap-2 text-sm font-medium text-accent-gold hover:text-accent-gold-dark transition-colors"
+              >
+                <FiDownload className="text-sm" />
+                Install Forkling as App
+              </button>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                Add Forkling to your home screen for quick access and offline support.
+              </p>
+            </div>
+          )}
 
           {/* Clear Cache */}
           <div className="pt-4 border-t border-gray-200 dark:border-gray-800">

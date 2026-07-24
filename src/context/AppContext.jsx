@@ -138,6 +138,41 @@ const [theme, setThemeState] = useState(() => {
   // ─── Settings Modal ────────────────────────────────
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+  // ─── PWA Install Prompt ────────────────────────────
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const triggerInstall = useCallback(async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPrompt(null);
+    }
+  }, [installPrompt]);
+
+  // ─── Online / Offline ──────────────────────────────
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const goOnline = () => setIsOffline(false);
+    const goOffline = () => setIsOffline(true);
+    window.addEventListener('online', goOnline);
+    window.addEventListener('offline', goOffline);
+    return () => {
+      window.removeEventListener('online', goOnline);
+      window.removeEventListener('offline', goOffline);
+    };
+  }, []);
+
   // ─── Context Value ─────────────────────────────────
   const value = {
     theme, setTheme, toggleTheme,
@@ -146,6 +181,8 @@ const [theme, setThemeState] = useState(() => {
     rateLimit, refreshRateLimit,
     recentSearches, addRecentSearch,
     settingsOpen, setSettingsOpen,
+    installPrompt, triggerInstall,
+    isOffline,
   };
 
   return (
