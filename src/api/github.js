@@ -218,6 +218,53 @@ export async function compareRefs(owner, repo, base, head) {
 }
 
 /**
+ * Get trending repositories created within a time window, sorted by stars.
+ *
+ * Uses the GitHub Search API with `created:>YYYY-MM-DD` to approximate
+ * a "trending" feed. Repos are sorted by star count descending so the
+ * most-starred recent repos surface first.
+ *
+ * @param {'daily'|'weekly'|'monthly'} timeRange
+ * @param {string} [language] — optional language filter (e.g. 'JavaScript')
+ * @param {number} [page=1]
+ * @param {number} [perPage=30]
+ */
+export async function getTrendingRepos(timeRange = 'weekly', language = '', page = 1, perPage = 30) {
+  const now = new Date();
+  let cutoff;
+
+  switch (timeRange) {
+    case 'daily':
+      cutoff = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
+      break;
+    case 'monthly':
+      cutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      break;
+    case 'weekly':
+    default:
+      cutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      break;
+  }
+
+  const dateStr = cutoff.toISOString().split('T')[0];
+  let q = `created:>${dateStr} stars:>5`;
+
+  if (language) {
+    q += ` language:${language}`;
+  }
+
+  const url = buildUrl('/search/repositories', {
+    q,
+    sort: 'stars',
+    order: 'desc',
+    page,
+    per_page: perPage,
+  });
+
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
  * Test if a PAT is valid.
  */
 export async function testPAT(pat) {
