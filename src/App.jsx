@@ -21,6 +21,7 @@ import RepoAnalyticsPage from '@/pages/RepoAnalyticsPage';
 import RepoIssuesPage from '@/pages/RepoIssuesPage';
 import RepoGovernancePage from '@/pages/RepoGovernancePage';
 import RepoForksPage from '@/pages/RepoForksPage';
+import TrendingPage from '@/pages/TrendingPage';
 
 function NotFound() {
   return (
@@ -76,6 +77,9 @@ function AppLayout() {
         <Routes>
           {/* Home — repo browsing experience */}
           <Route path="/" element={<HomePage />} />
+
+          {/* Trending — hot repos by time range */}
+          <Route path="/trending" element={<TrendingPage />} />
 
           {/* Compare — 3-slot repo comparison */}
           <Route path="/compare" element={<ComparePage />} />
