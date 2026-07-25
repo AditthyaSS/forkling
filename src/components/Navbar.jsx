@@ -13,6 +13,7 @@ export default function Navbar() {
 
   const navLinks = [
     { to: '/', label: 'Home' },
+    { to: '/trending', label: 'Trending' },
     { to: '/compare', label: 'Compare', badge: compareList.length > 0 ? compareList.length : null },
     { to: '/guide', label: 'Guide' },
   ];
