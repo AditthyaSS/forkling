@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { getRepo, getContributors, getCommunityProfile, searchRepos } from '@/api/github';
-import { FiPlus, FiX, FiSearch, FiStar, FiGitBranch, FiAlertCircle, FiShield, FiUsers, FiClock, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiX, FiSearch, FiStar, FiGitBranch, FiAlertCircle, FiShield, FiUsers, FiClock, FiTrash2, FiCopy, FiShare2, } from 'react-icons/fi';
 import { formatNumber } from '@/utils/format';
 
 function formatDate(d) {
@@ -47,6 +47,23 @@ export default function ComparePage() {
     loadAll();
   }, [compareList]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.loacation.search);
+
+    const repos = params.get("repos");
+
+    if (!repos) return;
+
+    repos.split(",").forEach(async(fullName) => {
+      const [owner, repo] = fullName.split("/");
+
+      try{
+        const repository = await getRepo(owner, repo);
+        addToCompare(repository);
+      } catch (_) {}
+    });
+  }, [addToCompare]);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -78,6 +95,47 @@ export default function ComparePage() {
     { key: 'pushed', label: 'Last Push', icon: <FiClock />, getValue: (d) => formatDate(d?.repo?.pushed_at) },
     { key: 'created', label: 'Created', icon: <FiClock />, getValue: (d) => formatDate(d?.repo?.created_at) },
   ];
+
+  const markdownTable = useMemo(() => {
+  if (compareList.length === 0) return "";
+
+  let md = "| Metric |";
+
+  compareList.forEach(repo => {
+    md += ` ${repo.name} |`;
+  });
+
+  md += "\n|---|";
+  compareList.forEach(() => {
+    md += "---|";
+  });
+
+  COMPARE_METRICS.forEach(metric => {
+    md += `\n| ${metric.label} |`;
+
+    compareList.forEach(repo => {
+      md += ` ${metric.getValue(repoData[repo.full_name])} |`;
+    });
+  });
+
+  return md;
+}, [compareList, repoData]);
+
+const copyMarkdown = async () => {
+  await navigator.clipboard.writeText(markdownTable);
+  alert("Markdown copied!");
+};
+
+const shareComparison = async () => {
+  const repos = compareList.map(r => r.full_name).join(",");
+
+  const url =
+    `${window.location.origin}/compare?repos=${encodeURIComponent(repos)}`;
+
+  await navigator.clipboard.writeText(url);
+
+  alert("Shareable link copied!");
+};
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -174,6 +232,26 @@ export default function ComparePage() {
           )}
         </div>
       )}
+      
+      <div className="flex justify-end gap-3 mb-4">
+        <button
+          onClick={copyMarkdown}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
+      >
+        <FiCopy />
+        Copy as Markdown
+        </button>
+
+        <button
+           onClick={shareComparison}
+           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700"
+        >
+          
+        <FiShare2 />
+        Share Link
+        </button>
+      </div>
+
 
       {/* Comparison Table */}
       {compareList.length > 0 && Object.keys(repoData).length > 0 && !loading && (
