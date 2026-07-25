@@ -413,3 +413,27 @@ body {
     display: none;
   }
 }
+
+/* ═══════════════════ TRENDING PAGE ═══════════════════ */
+.trending-gradient-text {
+  background: linear-gradient(135deg, #F97316 0%, #F59E0B 40%, #EAB308 70%, #D6A228 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .trending-gradient-text {
+  background: linear-gradient(135deg, #FB923C 0%, #FBBF24 40%, #F59E0B 70%, #FDE68A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes fire-pulse {
+  0%, 100% { box-shadow: 0 0 4px 0 rgba(249, 115, 22, 0.3); }
+  50% { box-shadow: 0 0 12px 2px rgba(249, 115, 22, 0.5); }
+}
+
+.animate-fire-pulse {
+  animation: fire-pulse 2s ease-in-out infinite;
+}
