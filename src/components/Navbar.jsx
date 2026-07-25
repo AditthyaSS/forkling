@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
-import { FiSun, FiMoon, FiSettings, FiMenu, FiX } from 'react-icons/fi';
+import { FiSun, FiMoon, FiSettings, FiMenu, FiX, FiDownload } from 'react-icons/fi';
 import { HiOutlineSparkles } from 'react-icons/hi2';
 
 export default function Navbar() {
-  const { theme, toggleTheme, setSettingsOpen, compareList } = useApp();
+  const { theme, toggleTheme, setSettingsOpen, compareList, installPrompt, triggerInstall } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
@@ -84,6 +84,18 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
+          {/* Install App — only visible when browser offers PWA install */}
+          {installPrompt && (
+            <button
+              onClick={triggerInstall}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-accent-gold text-white rounded-lg hover:bg-accent-gold-dark transition-colors"
+              aria-label="Install Forkling app"
+            >
+              <FiDownload className="text-sm" />
+              Install
+            </button>
+          )}
+
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
