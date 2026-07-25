@@ -169,6 +169,29 @@ export async function getParticipation(owner, repo) {
 }
 
 /**
+ * Get forks for a repository, sorted by stargazers.
+ * GitHub REST API: GET /repos/{owner}/{repo}/forks
+ */
+export async function getForks(owner, repo, perPage = 30, page = 1) {
+  const url = buildUrl(`/repos/${owner}/${repo}/forks`, {
+    sort: 'stargazers',
+    order: 'desc',
+    per_page: perPage,
+    page,
+  });
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
+ * Compare two branches or refs.
+ * GitHub REST API: GET /repos/{owner}/{repo}/compare/{base}...{head}
+ */
+export async function getCompare(owner, repo, base, head) {
+  const url = buildUrl(`/repos/${owner}/${repo}/compare/${base}...${head}`);
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
  * Test if a PAT is valid.
  */
 export async function testPAT(pat) {
