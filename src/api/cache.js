@@ -96,6 +96,11 @@ export async function fetchWithCache(url, options = {}, ttl = DEFAULT_TTL) {
     used: parseInt(response.headers.get('x-ratelimit-used') || '0', 10),
   };
 
+  if (Array.isArray(data)) {
+    data._rateLimit = rateLimit;
+    return data;
+  }
+
   return { ...data, _rateLimit: rateLimit };
 }
 
