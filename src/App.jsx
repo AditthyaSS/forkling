@@ -21,6 +21,7 @@ import RepoAnalyticsPage from '@/pages/RepoAnalyticsPage';
 import RepoIssuesPage from '@/pages/RepoIssuesPage';
 import RepoGovernancePage from '@/pages/RepoGovernancePage';
 import RepoForksPage from '@/pages/RepoForksPage';
+import RepoReleasesPage from '@/pages/RepoReleasesPage';
 import TrendingPage from '@/pages/TrendingPage';
 
 function NotFound() {
@@ -100,6 +101,7 @@ function AppLayout() {
             <Route path="issues" element={<RepoIssuesPage />} />
             <Route path="governance" element={<RepoGovernancePage />} />
             <Route path="forks" element={<RepoForksPage />} />
+            <Route path="releases" element={<RepoReleasesPage />} />
           </Route>
 
           {/* 404 */}
