@@ -265,6 +265,18 @@ export async function getTrendingRepos(timeRange = 'weekly', language = '', page
 }
 
 /**
+ * Get releases for a repository.
+ * @param {string} owner
+ * @param {string} repo
+ * @param {number} perPage
+ * @param {number} page
+ */
+export async function getReleases(owner, repo, perPage = 100, page = 1) {
+  const url = buildUrl(`/repos/${owner}/${repo}/releases`, { per_page: perPage, page });
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
  * Test if a PAT is valid.
  */
 export async function testPAT(pat) {
