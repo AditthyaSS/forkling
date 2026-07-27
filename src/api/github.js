@@ -99,6 +99,28 @@ export async function getIssues(owner, repo, params = {}) {
 }
 
 /**
+ * Get pull requests for a repository.
+ * @param {string} owner
+ * @param {string} repo
+ * @param {Object} params
+ * @param {'open'|'closed'|'all'} [params.state='open']
+ * @param {'created'|'updated'|'popularity'|'long-running'} [params.sort='created']
+ * @param {'desc'|'asc'} [params.direction='desc']
+ * @param {number} [params.perPage=30]
+ * @param {number} [params.page=1]
+ */
+export async function getPullRequests(owner, repo, params = {}) {
+  const url = buildUrl(`/repos/${owner}/${repo}/pulls`, {
+    state: params.state || 'open',
+    sort: params.sort || 'created',
+    direction: params.direction || 'desc',
+    per_page: params.perPage || 30,
+    page: params.page || 1,
+  });
+  return fetchWithCache(url, { headers: getHeaders() });
+}
+
+/**
  * Get language breakdown for a repository.
  */
 export async function getLanguages(owner, repo) {
