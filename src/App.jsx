@@ -19,6 +19,7 @@ import RepoContributorsPage from '@/pages/RepoContributorsPage';
 import RepoNetworkPage from '@/pages/RepoNetworkPage';
 import RepoAnalyticsPage from '@/pages/RepoAnalyticsPage';
 import RepoIssuesPage from '@/pages/RepoIssuesPage';
+import RepoPullRequestsPage from '@/pages/RepoPullRequestsPage';
 import RepoGovernancePage from '@/pages/RepoGovernancePage';
 import RepoForksPage from '@/pages/RepoForksPage';
 import RepoReleasesPage from '@/pages/RepoReleasesPage';
@@ -99,6 +100,7 @@ function AppLayout() {
             <Route path="network" element={<RepoNetworkPage />} />
             <Route path="analytics" element={<RepoAnalyticsPage />} />
             <Route path="issues" element={<RepoIssuesPage />} />
+            <Route path="pulls" element={<RepoPullRequestsPage />} />
             <Route path="governance" element={<RepoGovernancePage />} />
             <Route path="forks" element={<RepoForksPage />} />
             <Route path="releases" element={<RepoReleasesPage />} />
