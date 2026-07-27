@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="public/fl.png" alt="Forky the axolotl" width="370" />
+  <img src="public/Forkling_logo.png" alt="Forky the axolotl" width="120" />
+  <br />
+  <img src="public/fl.png" alt="Forkling" width="370" />
 </div>
 
 > 🦎 **Hey, I'm Forky** — an axolotl who lives inside this project. I'll be your guide as you look around.  
