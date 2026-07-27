@@ -24,6 +24,7 @@ const TABS = [
   { path: "/network", label: "Network" },
   { path: "/analytics", label: "Analytics" },
   { path: "/issues", label: "Issues" },
+  { path: "/pulls", label: "Pull Requests" },
   { path: "/governance", label: "Governance" },
   { path: "/forks", label: "Forks" },
   { path: "/releases", label: "Releases" },
