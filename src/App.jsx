@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AppProvider } from '@/context/AppContext';
+import { AppProvider, useApp } from '@/context/AppContext';
+import { FiWifiOff } from 'react-icons/fi';
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -18,8 +19,11 @@ import RepoContributorsPage from '@/pages/RepoContributorsPage';
 import RepoNetworkPage from '@/pages/RepoNetworkPage';
 import RepoAnalyticsPage from '@/pages/RepoAnalyticsPage';
 import RepoIssuesPage from '@/pages/RepoIssuesPage';
+import RepoPullRequestsPage from '@/pages/RepoPullRequestsPage';
 import RepoGovernancePage from '@/pages/RepoGovernancePage';
 import RepoForksPage from '@/pages/RepoForksPage';
+import RepoReleasesPage from '@/pages/RepoReleasesPage';
+import TrendingPage from '@/pages/TrendingPage';
 
 function NotFound() {
   return (
@@ -46,6 +50,18 @@ function NotFound() {
   );
 }
 
+function OfflineBanner() {
+  const { isOffline } = useApp();
+  if (!isOffline) return null;
+
+  return (
+    <div className="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800/40 px-4 py-2.5 flex items-center justify-center gap-2 text-sm text-amber-700 dark:text-amber-400 font-medium">
+      <FiWifiOff className="text-base flex-shrink-0" />
+      <span>You're offline — Forky is showing cached data. Some features may be limited.</span>
+    </div>
+  );
+}
+
 function AppLayout() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0B0D11] text-gray-900 dark:text-gray-100 transition-colors duration-300">
@@ -54,6 +70,7 @@ function AppLayout() {
 
       {/* Rate limit banner sits just below fixed nav */}
       <div className="pt-[108px]">
+        <OfflineBanner />
         <RateLimitBanner />
       </div>
 
@@ -62,6 +79,9 @@ function AppLayout() {
         <Routes>
           {/* Home — repo browsing experience */}
           <Route path="/" element={<HomePage />} />
+
+          {/* Trending — hot repos by time range */}
+          <Route path="/trending" element={<TrendingPage />} />
 
           {/* Compare — 3-slot repo comparison */}
           <Route path="/compare" element={<ComparePage />} />
@@ -80,8 +100,10 @@ function AppLayout() {
             <Route path="network" element={<RepoNetworkPage />} />
             <Route path="analytics" element={<RepoAnalyticsPage />} />
             <Route path="issues" element={<RepoIssuesPage />} />
+            <Route path="pulls" element={<RepoPullRequestsPage />} />
             <Route path="governance" element={<RepoGovernancePage />} />
             <Route path="forks" element={<RepoForksPage />} />
+            <Route path="releases" element={<RepoReleasesPage />} />
           </Route>
 
           {/* 404 */}

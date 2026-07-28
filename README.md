@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="public/fl.png" alt="Forky the axolotl" width="370" />
+  <img src="public/Forkling_logo.png" alt="Forky the axolotl" width="120" />
+  <br />
+  <img src="public/fl.png" alt="Forkling" width="370" />
 </div>
 
 > 🦎 **Hey, I'm Forky** — an axolotl who lives inside this project. I'll be your guide as you look around.  
@@ -13,7 +15,7 @@ Forkling is a deep-dive tool for open-source repos — health scores, contributo
 
 ## 🧡 What Forky can show you
 
-- **Repo Explorer** — search any GitHub org or `owner/repo` and get the full picture: health score, contributor bus-factor, a code-ownership network graph, commit/issue analytics, and a "good first issue" triage panel. Forky's favorite part — this is where you find out if a repo is actually worth your time.
+- **Repo Explorer** — search any GitHub org or `owner/repo` and get the full picture: health score, contributor bus-factor, a code-ownership network graph, commit/issue analytics, pull request overview, and a "good first issue" triage panel. Forky's favorite part — this is where you find out if a repo is actually worth your time.
 - **Compare** — line up to 3 repos side-by-side (stars, forks, license, health, activity)
 - **Open-Source LLM Explorer** — a leaderboard of open-weight models (Llama, Mistral, Qwen, DeepSeek, and more), filterable by license, size, and context window
 - **Contributor Guide** — a plain-language path for anyone making their first open-source contribution — Forky wrote this one specifically for first-timers, so don't be shy.
@@ -89,7 +91,11 @@ forkling/
 │   │   ├── RepoNetworkPage.jsx        # Tab: D3 force graph (code ownership / issues)
 │   │   ├── RepoAnalyticsPage.jsx      # Tab: commit activity + participation charts
 │   │   ├── RepoIssuesPage.jsx         # Tab: good-first-issue triage
-│   │   └── RepoGovernancePage.jsx     # Tab: community health + license check
+│   │   ├── RepoPullRequestsPage.jsx   # Tab: pull request browser with sort/state filters
+│   │   ├── RepoGovernancePage.jsx     # Tab: community health + license check
+│   │   ├── RepoForksPage.jsx          # Tab: fork explorer with divergence analysis
+│   │   ├── RepoReleasesPage.jsx       # Tab: release timeline + asset downloads
+│   │   └── TrendingPage.jsx           # Trending repos by daily/weekly/monthly
 │   ├── App.jsx                  # Router + layout shell
 │   ├── main.jsx                 # React entry point
 │   └── index.css                # Tailwind v4 @theme tokens + global styles
@@ -116,8 +122,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) — Forky walks through it there.
 
 Current version is fully static (no backend). Planned for a future version (see open issues for details):
 
-- Trending repos/orgs and trending models
 - Personal "what should I work on today" feed
+- Trending models leaderboard
 - Notifications for repo/model activity
 - Embeddable repo-health badges
 
